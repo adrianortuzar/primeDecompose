@@ -40,7 +40,7 @@ func usedPrimes(_ number:Int) -> [Int]{
     var module = 1
     var returnArr = [Int]()
     
-    while prime < number {
+    while prime <= number {
         
         module = number % prime
         
@@ -86,5 +86,5 @@ func decompose(_ number:Int) -> [Int:Int]{
     return returnDic
 }
 
-decompose(20)
+decompose(2)
 
