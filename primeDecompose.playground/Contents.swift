@@ -31,60 +31,55 @@ func primeGenerator () -> Int {
 }
 
 
-func usedPrimes(_ number:Int) -> [Int]{
-    if number < 0 {
-        return []
-    }
+func primePower(number:Int, prime:Int) -> Int {
     
-    var prime:Int = primeGenerator()
-    var module = 1
-    var returnArr = [Int]()
+    let module = number % prime
     
-    while prime <= number {
+    if module == 0 {
+        var power = 0
+        var returnPower:Int = 1
+        var module:Double = 0
         
-        module = number % prime
-        
-        if module == 0 {
-            returnArr.append(prime)
+        while module == 0 {
+            
+            module = {
+                let po:Double = pow(Double(prime), Double(power))
+                return Double(number).truncatingRemainder(dividingBy:po)
+            }()
+            
+            if module == 0 {
+                returnPower = power
+            }
+            
+            power = power + 1
         }
-        
-        prime = primeGenerator()
+        return returnPower
+    } else {
+        return 0
     }
-    
-    return returnArr
 }
 
 func decompose(_ number:Int) -> [Int:Int]{
     
     var returnDic = [Int:Int]()
     
-    usedPrimes(number).forEach { prime in
-        
-        returnDic[prime] = 1
-        
-        var whileIs = true
-        
-        var power = 1
-        
-        while whileIs {
+    var totalDecompose = 1
     
-            let po:Double = pow(Double(prime), Double(power))
-            let module = Double(number).truncatingRemainder(dividingBy:po)
-            
-            
-            if module == 0 {
-                returnDic[prime] = power
-            }
-            else {
-                whileIs = false
-            }
-            
-            power = power + 1
+    while totalDecompose < number {
+        let prime = primeGenerator()
+        let primePow = primePower(number: number, prime: prime)
+        if primePow != 0 {
+            returnDic[prime] = primePow
+            totalDecompose = {
+                let p = pow(Decimal(prime), primePow)
+                let r = NSDecimalNumber(decimal: p)
+                return totalDecompose * Int(r)
+            }()
         }
     }
     
     return returnDic
 }
 
-decompose(2)
+decompose(86240)
 
