@@ -59,17 +59,21 @@ func primePower(number:Int, prime:Int) -> Int {
     }
 }
 
-func decompose(_ number:Int) -> [Int:Int]{
+
+func decompose(_ number:Int) -> [(prime:Int, pow:Int)]{
     
-    var returnDic = [Int:Int]()
+    var returnArr = [(prime:Int, pow:Int)]()
     
     var totalDecompose = 1
     
     while totalDecompose < number {
+        
         let prime = primeGenerator()
+        
         let primePow = primePower(number: number, prime: prime)
+        
         if primePow != 0 {
-            returnDic[prime] = primePow
+            returnArr.append((prime, primePow))
             totalDecompose = {
                 let p = pow(Decimal(prime), primePow)
                 let r = NSDecimalNumber(decimal: p)
@@ -78,8 +82,26 @@ func decompose(_ number:Int) -> [Int:Int]{
         }
     }
     
-    return returnDic
+    return returnArr
 }
 
-decompose(86240)
+func stringFormat(_ arr:[(prime:Int, pow:Int)]) -> String {
+    var stringTore:String = ""
+    arr.forEach { (tuple:(prime: Int, pow: Int)) in
+        
+        stringTore = {
+            if (tuple.pow == 1){
+                return stringTore + "(" + String(tuple.prime) + ")"
+            } else {
+                return stringTore + "(" + String(tuple.prime) + "**" + String(tuple.pow) + ")"
+            }
+        }()
+    
+    }
+    
+    return stringTore
+}
+
+stringFormat(decompose(86240))
+
 
