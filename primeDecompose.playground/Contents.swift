@@ -3,105 +3,39 @@
 import UIKit
 
 
-var lastPrime:Int = 1
-
-func primeGenerator () -> Int {
+func decompose(_ number: Int) -> String {
     
-    var isPrime = false
+    var tmpNumber = number
+    var result = ""
+    var total = 1
     
-    while isPrime == false {
+    
+    for primeCandidate in 2...tmpNumber {
         
-        lastPrime = lastPrime + 1
-        
-        for n:Int in 2...lastPrime {
-            
-            let module = lastPrime % n
-            
-            if module == 0 && n == lastPrime {
-                isPrime = true
-                break
-            }
-            else if module == 0 {
-                break
-            }
-        }
-    }
-    
-    return lastPrime
-}
-
-
-func primePower(number:Int, prime:Int) -> Int {
-    
-    let module = number % prime
-    
-    if module == 0 {
         var power = 0
-        var returnPower:Int = 1
-        var module:Double = 0
-        
-        while module == 0 {
+        while tmpNumber % primeCandidate == 0 {
             
-            module = {
-                let po:Double = pow(Double(prime), Double(power))
-                return Double(number).truncatingRemainder(dividingBy:po)
+            tmpNumber /= primeCandidate
+            
+            power += 1
+        }
+        
+        if (power != 0) {
+            
+            result += "(" + String(primeCandidate)
+            result += power > 1 ? "**"+String(power):""
+            result += ")"
+            
+            total = {
+                return total * Int(pow(Double(primeCandidate), Double(power)))
             }()
             
-            if module == 0 {
-                returnPower = power
+            if total == number {
+                break
             }
-            
-            power = power + 1
-        }
-        return returnPower
-    } else {
-        return 0
-    }
-}
-
-
-func decompose(_ number:Int) -> [(prime:Int, pow:Int)]{
-    
-    var returnArr = [(prime:Int, pow:Int)]()
-    
-    var totalDecompose = 1
-    
-    while totalDecompose < number {
-        
-        let prime = primeGenerator()
-        
-        let primePow = primePower(number: number, prime: prime)
-        
-        if primePow != 0 {
-            returnArr.append((prime, primePow))
-            totalDecompose = {
-                let p = pow(Decimal(prime), primePow)
-                let r = NSDecimalNumber(decimal: p)
-                return totalDecompose * Int(r)
-            }()
         }
     }
-    
-    return returnArr
+    return result
 }
 
-func stringFormat(_ arr:[(prime:Int, pow:Int)]) -> String {
-    var stringTore:String = ""
-    arr.forEach { (tuple:(prime: Int, pow: Int)) in
-        
-        stringTore = {
-            if (tuple.pow == 1){
-                return stringTore + "(" + String(tuple.prime) + ")"
-            } else {
-                return stringTore + "(" + String(tuple.prime) + "**" + String(tuple.pow) + ")"
-            }
-        }()
-    
-    }
-    
-    return stringTore
-}
-
-stringFormat(decompose(86240))
-
-
+decompose(86240)
